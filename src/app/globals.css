@@ -1,26 +1,85 @@
 @import "tailwindcss";
+@plugin "daisyui";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@plugin "daisyui/theme" {
+  name: "mentorlight";
+  default: true;
+  color-scheme: light;
+  --color-base-100: #fffbf2;
+  --color-base-200: #f6efdf;
+  --color-base-300: #e8dfcb;
+  --color-base-content: #111111;
+  --color-primary: #111111;
+  --color-primary-content: #fffbf2;
+  --color-secondary: #2b55d6;
+  --color-secondary-content: #ffffff;
+  --color-accent: #f6b22b;
+  --color-accent-content: #111111;
+  --color-neutral: #14151a;
+  --color-neutral-content: #fffbf2;
+  --color-info: #2b55d6;
+  --color-info-content: #ffffff;
+  --color-success: #1f9d63;
+  --color-success-content: #ffffff;
+  --color-warning: #f6b22b;
+  --color-warning-content: #111111;
+  --color-error: #e5484d;
+  --color-error-content: #ffffff;
+  --radius-selector: 1rem;
+  --radius-field: 9999px;
+  --radius-box: 1.5rem;
+  --border: 1px;
+}
+
+@plugin "daisyui/theme" {
+  name: "mentordark";
+  color-scheme: dark;
+  --color-base-100: #0e0f12;
+  --color-base-200: #16181d;
+  --color-base-300: #23262d;
+  --color-base-content: #f4f1ea;
+  --color-primary: #f4f1ea;
+  --color-primary-content: #111111;
+  --color-secondary: #5b84ff;
+  --color-secondary-content: #0e0f12;
+  --color-accent: #f6b22b;
+  --color-accent-content: #111111;
+  --color-neutral: #1b1d23;
+  --color-neutral-content: #f4f1ea;
+  --color-info: #5b84ff;
+  --color-info-content: #0e0f12;
+  --color-success: #34c185;
+  --color-success-content: #0e0f12;
+  --color-warning: #f6b22b;
+  --color-warning-content: #111111;
+  --color-error: #ff6b70;
+  --color-error-content: #0e0f12;
+  --radius-selector: 1rem;
+  --radius-field: 9999px;
+  --radius-box: 1.5rem;
+  --border: 1px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --animate-spin-slow: spin 28s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }

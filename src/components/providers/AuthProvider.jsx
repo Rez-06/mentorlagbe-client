@@ -2,31 +2,30 @@
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { authClient, SESSION_KEY } from "@/lib/auth-client";
+import { apiFetch } from "@/lib/apiFetch";
+import { getToken, setToken, clearToken } from "@/lib/token";
 
 const AuthContext = createContext(null);
 export const useAuth = () => useContext(AuthContext);
-
-const saveToken = (ctx) => {
-  const t = ctx.response.headers.get("set-auth-token");
-  if (t) localStorage.setItem(SESSION_KEY, t);
-};
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Runs on every page load/reload: restores the user from the saved JWT
   const loadUser = useCallback(async () => {
-    if (!localStorage.getItem(SESSION_KEY)) {
-      setUser(null);
+    if (!getToken()) {
       setLoading(false);
       return;
     }
     try {
-      const { data } = await authClient.getSession();
-      setUser(data?.user ?? null);
-      if (!data) localStorage.removeItem(SESSION_KEY);
-    } catch {
-      setUser(null);
+      setUser(await apiFetch("/api/users/me"));
+    } catch (err) {
+      if (err.status === 401) {
+        clearToken();
+        localStorage.removeItem(SESSION_KEY);
+        setUser(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -36,16 +35,40 @@ export default function AuthProvider({ children }) {
     loadUser();
   }, [loadUser]);
 
+  // BetterAuth session token -> our API JWT
+  const establish = async (sessionToken) => {
+    localStorage.setItem(SESSION_KEY, sessionToken);
+    const { token, user } = await apiFetch("/api/jwt", {
+      method: "POST",
+      auth: false,
+      headers: { Authorization: `Bearer ${sessionToken}` },
+    });
+    setToken(token);
+    setUser(user);
+  };
+
   const login = async (email, password) => {
-    const { error } = await authClient.signIn.email({ email, password }, { onSuccess: saveToken });
+    localStorage.removeItem(SESSION_KEY);
+    let sessionToken = null;
+    const { error } = await authClient.signIn.email(
+      { email, password },
+      { onSuccess: (ctx) => (sessionToken = ctx.response.headers.get("set-auth-token")) }
+    );
     if (error) throw new Error(error.message || "Sign in failed");
-    await loadUser();
+    if (!sessionToken) throw new Error("Could not start your session");
+    await establish(sessionToken);
   };
 
   const register = async ({ name, email, password, role }) => {
-    const { error } = await authClient.signUp.email({ name, email, password, role }, { onSuccess: saveToken });
+    localStorage.removeItem(SESSION_KEY);
+    let sessionToken = null;
+    const { error } = await authClient.signUp.email(
+      { name, email, password, role },
+      { onSuccess: (ctx) => (sessionToken = ctx.response.headers.get("set-auth-token")) }
+    );
     if (error) throw new Error(error.message || "Sign up failed");
-    await loadUser();
+    if (!sessionToken) throw new Error("Could not start your session");
+    await establish(sessionToken);
   };
 
   const logout = async () => {
@@ -53,6 +76,7 @@ export default function AuthProvider({ children }) {
       await authClient.signOut();
     } catch {}
     localStorage.removeItem(SESSION_KEY);
+    clearToken();
     setUser(null);
   };
 

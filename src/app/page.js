@@ -4,14 +4,16 @@ import FeaturedTuitions from "@/components/home/FeaturedTuitions";
 //import PricingSection from "@/components/home/PricingSection";
 import SubjectsStats from "@/components/home/SubjectsStats";
 import Testimonials from "@/components/home/Testimonials";
-import { sampleTuitions } from "@/lib/sampleData";
+import { fetchPublic } from "@/lib/api";
 
-export default function Home() {
+export default async function Home() {
+  const { data } = await fetchPublic("/api/tuitions/latest?limit=6");
+
   return (
     <>
       <Hero />
       <HowItWorks />
-      <FeaturedTuitions tuitions={sampleTuitions} />
+      <FeaturedTuitions tuitions={data?.tuitions || []} />
       {/* <PricingSection /> */}
       <SubjectsStats />
       <Testimonials />

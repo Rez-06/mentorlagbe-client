@@ -1,99 +1,139 @@
 import Link from "next/link";
-import { Search, BookOpen, Atom, BadgeCheck, Star, ArrowDown } from "lucide-react";
+import {
+  PiArrowUpRightBold,
+  PiArrowDownBold,
+  PiLightbulbFilamentDuotone,
+  PiAtomDuotone,
+  PiSealCheckDuotone,
+} from "react-icons/pi";
 import Container from "@/components/ui/Container";
+import HeroStage from "./HeroStage";
 
-const stats = [
-  ["2,400+", "Students"],
-  ["350+", "Tutors"],
-  ["4.9/5", "Avg. Rating"],
+const avatars = [
+  { letter: "A", cls: "bg-accent text-accent-content" },
+  { letter: "S", cls: "bg-secondary text-secondary-content" },
+  { letter: "T", cls: "bg-base-100 text-base-content" },
 ];
 
 export default function Hero() {
   return (
-    <section className="overflow-hidden pb-8 pt-12 sm:pt-16">
-      <Container className="grid items-center gap-12 lg:grid-cols-2">
-        {/* Text */}
-        <div>
-          <span className="inline-flex items-center gap-2 rounded-full bg-accent/30 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest">
-            <BadgeCheck size={14} /> 100% Verified Tutors
-          </span>
+    <section className="relative overflow-hidden pb-6 pt-8 lg:pt-10">
+      <Container>
+        <h1 className="sr-only">Find Your Ideal Tutor or Mentorship Batch Today</h1>
 
-          <h1 className="mt-5 text-4xl font-semibold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-            Find Your Ideal <span className="text-secondary">Tutor</span> or Mentorship
-            Batch Today
-          </h1>
+        {/* ---------- Main stage ---------- */}
+        <div className="grid items-stretch gap-6 lg:grid-cols-[1fr_14rem]">
+          <HeroStage className="h-auto w-full" />
 
-          <p className="mt-5 max-w-xl leading-relaxed text-base-content/70">
-            Search by subject, class level and budget. Learn online or at home with
-            tutors who are reviewed and approved before they appear.
-          </p>
+          <aside className="flex flex-col justify-between gap-8 lg:py-6">
+            <div>
+              <p className="font-semibold">Ready to learn?</p>
+              <p className="mt-2 text-sm leading-relaxed text-base-content/70">
+                Find your ideal tutor or mentorship batch today. Compare verified
+                mentors by subject, class level and budget.
+              </p>
+              <Link href="/tuitions" className="btn btn-primary mt-5 gap-2">
+                Find a tutor <PiArrowUpRightBold />
+              </Link>
+              <Link
+                href="/sign-up"
+                className="mt-4 block text-sm font-medium underline underline-offset-4 transition hover:text-secondary"
+              >
+                Or become a tutor
+              </Link>
+            </div>
 
-          <form
-            action="/tuitions"
-            className="mt-8 flex max-w-xl items-center gap-2 rounded-full border border-base-300 bg-base-200 p-2 shadow-sm"
-          >
-            <Search size={18} className="ml-3 shrink-0 text-base-content/50" />
-            <input
-              name="search"
-              placeholder="Try Math, Physics, IELTS..."
-              className="w-full bg-transparent px-2 text-sm outline-none placeholder:text-base-content/40"
-            />
-            <button className="btn btn-primary rounded-full px-6">Search</button>
-          </form>
+            <PiLightbulbFilamentDuotone className="hidden h-12 w-12 animate-float text-accent lg:block" />
 
-          <div className="mt-10 flex flex-wrap gap-8">
-            {stats.map(([num, label]) => (
-              <div key={label}>
-                <p className="text-2xl font-semibold">{num}</p>
-                <p className="text-sm text-base-content/60">{label}</p>
-              </div>
-            ))}
-          </div>
+            <Link
+              href="#how-it-works"
+              className="hidden flex-col items-center gap-3 self-end text-xs font-semibold uppercase tracking-[0.2em] lg:flex"
+            >
+              <span className="[writing-mode:vertical-rl]">Scroll down</span>
+              <span className="grid h-10 w-10 place-items-center rounded-full border border-base-content/30 transition hover:bg-base-content hover:text-base-100">
+                <PiArrowDownBold />
+              </span>
+            </Link>
+          </aside>
         </div>
 
-        {/* Visual */}
-        <div className="relative mx-auto aspect-square w-full max-w-md lg:max-w-lg">
-          <div className="absolute left-0 top-[18%] grid h-[52%] w-[52%] place-items-center rounded-full bg-accent text-accent-content shadow-xl">
-            <Atom size={72} strokeWidth={1.4} />
-          </div>
-          <div className="absolute bottom-0 right-0 grid h-[72%] w-[72%] place-items-center rounded-full bg-secondary text-secondary-content shadow-2xl">
-            <BookOpen size={120} strokeWidth={1.2} />
-          </div>
+        {/* ---------- Bottom info row ---------- */}
+        <div className="mt-10 grid items-center gap-8 border-t border-base-content/15 pt-8 sm:grid-cols-2 lg:grid-cols-4">
+          {/* 1. Top subjects */}
+          <Link href="/tuitions" className="group flex items-center gap-4">
+            <span className="relative grid h-24 w-24 shrink-0 place-items-center rounded-full bg-neutral text-accent">
+              <PiAtomDuotone className="h-12 w-12" />
+              <span className="absolute -bottom-1 -right-1 grid h-8 w-8 place-items-center rounded-full bg-accent text-accent-content ring-4 ring-base-100 transition group-hover:rotate-45">
+                <PiArrowUpRightBold size={14} />
+              </span>
+            </span>
+            <span className="text-lg font-semibold leading-snug">
+              Top subjects
+              <br />
+              this month
+            </span>
+          </Link>
 
-          <svg
-            viewBox="0 0 200 200"
-            className="absolute inset-0 h-full w-full animate-spin-slow text-base-content"
+          {/* 2. Rotating badge */}
+          <Link
+            href="/tuitions"
+            aria-label="Browse tuitions"
+            className="relative mx-auto grid h-28 w-28 place-items-center"
           >
-            <defs>
-              <path
-                id="circ"
-                d="M100,100 m-82,0 a82,82 0 1,1 164,0 a82,82 0 1,1 -164,0"
-              />
-            </defs>
-            <text fontSize="11" fontWeight="600" fill="currentColor">
-              <textPath href="#circ" textLength="510" lengthAdjust="spacing">
-                LEARN • GROW • MENTOR • LEARN • GROW • MENTOR •
-              </textPath>
-            </text>
-          </svg>
+            <svg
+              viewBox="0 0 120 120"
+              className="absolute inset-0 h-full w-full animate-spin-medium"
+              aria-hidden="true"
+            >
+              <defs>
+                <path id="badge-ring" d="M60,60 m-44,0 a44,44 0 1,1 88,0 a44,44 0 1,1 -88,0" />
+              </defs>
+              <text
+                fontSize="9.5"
+                fontWeight="700"
+                letterSpacing="1.5"
+                style={{ fontFamily: "var(--font-space-mono), monospace", fill: "currentColor" }}
+              >
+                <textPath href="#badge-ring" textLength="270" lengthAdjust="spacing">
+                  BROWSE TUITIONS • BROWSE TUITIONS •
+                </textPath>
+              </text>
+            </svg>
+            <span className="grid h-12 w-12 place-items-center rounded-full border border-base-content/40">
+              <PiArrowUpRightBold size={18} />
+            </span>
+          </Link>
 
-          <div className="absolute left-[4%] top-[4%] flex animate-float items-center gap-2 rounded-full bg-base-100 px-4 py-2 text-sm font-medium shadow-lg ring-1 ring-base-300">
-            <BadgeCheck size={16} className="text-success" /> Verified
+          {/* 3. Verified tutors */}
+          <div>
+            <p className="flex items-center gap-2 text-lg font-semibold">
+              <PiSealCheckDuotone className="h-6 w-6 text-secondary" /> Verified tutors
+            </p>
+            <span className="my-2 block h-[2px] w-8 bg-base-content" />
+            <p className="max-w-[16rem] text-sm leading-relaxed text-base-content/70">
+              Every batch is reviewed by an admin before it goes live, so you only see approved tutors.
+            </p>
           </div>
-          <div className="absolute bottom-[6%] left-[2%] flex animate-float items-center gap-2 rounded-full bg-neutral px-4 py-2 text-sm font-medium text-neutral-content shadow-lg [animation-delay:2s]">
-            <Star size={16} className="fill-accent text-accent" /> 4.9 Rated
+
+          {/* 4. Learner capsule */}
+          <div className="flex h-24 w-full max-w-[19rem] items-center gap-4 rounded-full bg-neutral px-5 text-neutral-content lg:justify-self-end">
+            <div className="flex -space-x-3">
+              {avatars.map((a) => (
+                <span
+                  key={a.letter}
+                  className={`grid h-11 w-11 place-items-center rounded-full text-sm font-bold ring-2 ring-neutral ${a.cls}`}
+                >
+                  {a.letter}
+                </span>
+              ))}
+            </div>
+            <div>
+              <p className="text-xl font-semibold leading-none">2,400+</p>
+              <p className="mt-1 text-xs text-neutral-content/70">learners onboard</p>
+            </div>
           </div>
         </div>
       </Container>
-
-      <div className="mt-6 hidden justify-center lg:flex">
-        <Link
-          href="#how-it-works"
-          className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-base-content/50 hover:text-base-content"
-        >
-          Scroll down <ArrowDown size={14} />
-        </Link>
-      </div>
     </section>
   );
 }

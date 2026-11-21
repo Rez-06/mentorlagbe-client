@@ -66,13 +66,36 @@ export default function Footer() {
           <LinkColumn title="Platform" items={platform} />
           <LinkColumn title="Resources" items={resources} />
 
-          {/* Logo mark (spans 2 rows on desktop) */}
+          {/* Emblem: mortarboard on an open book (spans 2 rows on desktop) */}
           <div className={`${cell} hidden place-items-center p-8 lg:grid lg:row-span-2`}>
-            <svg viewBox="0 0 120 120" className="h-36 w-36 text-base-content" fill="none" stroke="currentColor" strokeWidth="4" strokeLinejoin="round">
-              <path d="M60 10 L105 35 L105 85 L60 110 L15 85 L15 35 Z" />
-              <path d="M15 35 L60 60 L105 35" />
-              <path d="M60 60 V110" />
-              <path d="M38 22 L83 47" />
+            <svg
+              viewBox="0 0 140 140"
+              className="h-40 w-40 text-base-content"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3.5"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+              aria-hidden="true"
+            >
+              <path d="M36 53 V78 C36 91 104 91 104 78 V53" />
+              <path d="M70 14 L128 40 L70 66 L12 40 Z" />
+              <path d="M128 40 V86" />
+              <circle cx="128" cy="93" r="6" />
+              <path d="M14 108 C34 100 56 102 70 112 C84 102 106 100 126 108 V128 C106 120 84 122 70 132 C56 122 34 120 14 128 Z" />
+              <path d="M70 112 V132" />
+              <path
+                d="M0-12C1-4 4-1 12 0 4 1 1 4 0 12-1 4-4 1-12 0-4-1-1-4 0-12Z"
+                transform="translate(16 72) scale(.9)"
+                fill="#F6B22B"
+                stroke="none"
+              />
+              <path
+                d="M0-12C1-4 4-1 12 0 4 1 1 4 0 12-1 4-4 1-12 0-4-1-1-4 0-12Z"
+                transform="translate(112 10) scale(.7)"
+                fill="#2B55D6"
+                stroke="none"
+              />
             </svg>
           </div>
 

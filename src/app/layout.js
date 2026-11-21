@@ -1,4 +1,4 @@
-import { Poppins, Space_Mono } from "next/font/google";
+import { Poppins, Space_Mono, Oleo_Script } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -16,6 +16,12 @@ const spaceMono = Space_Mono({
   variable: "--font-space-mono",
 });
 
+const oleo = Oleo_Script({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-oleo",
+});
+
 export const metadata = {
   title: "MentorLagbe | Find Your Ideal Tutor",
   description:
@@ -26,7 +32,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" data-theme="mentorlight">
       <body
-        className={`${poppins.variable} ${spaceMono.variable} bg-base-100 text-base-content antialiased`}
+        className={`${poppins.variable} ${spaceMono.variable} ${oleo.variable} bg-base-100 text-base-content antialiased`}
       >
         <Navbar />
         <main className="min-h-[70vh]">{children}</main>

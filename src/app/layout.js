@@ -1,11 +1,19 @@
-import { Poppins } from "next/font/google";
+import { Poppins, Space_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import "./globals.css";
 
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-poppins",
+});
+
+const spaceMono = Space_Mono({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-space-mono",
 });
 
 export const metadata = {
@@ -17,8 +25,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" data-theme="mentorlight">
-      <body className={`${poppins.variable} bg-base-100 text-base-content antialiased`}>
-        {children}
+      <body
+        className={`${poppins.variable} ${spaceMono.variable} bg-base-100 text-base-content antialiased`}
+      >
+        <Navbar />
+        <main className="min-h-[70vh]">{children}</main>
+        <Footer />
         <Toaster position="top-right" toastOptions={{ duration: 3000 }} />
       </body>
     </html>

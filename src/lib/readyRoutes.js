@@ -8,4 +8,5 @@ export const READY_ROUTES = [
   "/dashboard/student/my-applications",
   "/dashboard/tutor/applicants",
   "/dashboard/admin/users",
+  "/dashboard/admin/tuitions",
 ];

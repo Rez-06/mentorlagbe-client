@@ -1,34 +1,10 @@
-import {
-  PiSquaresFourDuotone, PiFileTextDuotone, PiPlusCircleDuotone, PiBooksDuotone, PiUsersThreeDuotone,
-  PiReceiptDuotone, PiIdentificationCardDuotone, PiChalkboardTeacherDuotone,
-} from "react-icons/pi";
-import { READY_ROUTES } from "./readyRoutes";
-
-const profile = { label: "Update Profile", href: "/dashboard/profile", icon: PiIdentificationCardDuotone };
-
-const raw = {
-  student: [
-    { label: "Overview", href: "/dashboard/student", icon: PiSquaresFourDuotone },
-    { label: "My Applications", href: "/dashboard/student/my-applications", icon: PiFileTextDuotone },
-    profile,
-  ],
-  tutor: [
-    { label: "Overview", href: "/dashboard/tutor", icon: PiSquaresFourDuotone },
-    { label: "Post Tuition", href: "/dashboard/tutor/post-tuition", icon: PiPlusCircleDuotone },
-    { label: "My Tuitions", href: "/dashboard/tutor/my-tuitions", icon: PiBooksDuotone },
-    { label: "Applicants", href: "/dashboard/tutor/applicants", icon: PiChalkboardTeacherDuotone },
-    profile,
-  ],
-  admin: [
-    { label: "Overview", href: "/dashboard/admin", icon: PiSquaresFourDuotone },
-    { label: "Users", href: "/dashboard/admin/users", icon: PiUsersThreeDuotone },
-    { label: "Tuitions", href: "/dashboard/admin/tuitions", icon: PiBooksDuotone },
-    { label: "Transactions", href: "/dashboard/admin/transactions", icon: PiReceiptDuotone },
-    profile,
-  ],
+export const PLANS = {
+  student: {
+    free: { name: "Student Free", price: 0, features: ["Browse all approved tuitions", "Apply to tuitions", "Track application status", "Basic profile"] },
+    pro: { name: "Student Pro", price: 10, features: ["Priority booking on applications", "Save unlimited tuitions", "Pro badge on your profile", "Priority support"] },
+  },
+  tutor: {
+    free: { name: "Tutor Free", price: 0, features: ["Post up to 2 tuitions", "Manage student applicants", "Public tutor profile", "Standard listing"] },
+    pro: { name: "Tutor Pro", price: 15, features: ["Unlimited tuition posts", "Verified tutor badge", "Featured listing placement", "Priority support"] },
+  },
 };
-
-// Pages not in READY_ROUTES are shown disabled with a "Soon" tag
-export const dashboardNav = Object.fromEntries(
-  Object.entries(raw).map(([role, items]) => [role, items.map((i) => ({ ...i, soon: !READY_ROUTES.includes(i.href) }))])
-);

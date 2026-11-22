@@ -3,12 +3,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
   PiArrowLeftBold, PiGraduationCapDuotone, PiCalendarBlankDuotone, PiMapPinDuotone,
-  PiVideoCameraDuotone, PiSealCheckDuotone,
+  PiVideoCameraDuotone, PiSealCheckDuotone, PiStarFill,
 } from "react-icons/pi";
 import Container from "@/components/ui/Container";
 import SubjectArt from "@/components/ui/SubjectArt";
 import UserAvatar from "@/components/ui/UserAvatar";
 import ApplyPanel from "@/components/tuitions/ApplyPanel";
+import ReviewsSection from "@/components/tuitions/ReviewsSection";
 import { fetchPublic } from "@/lib/api";
 
 function Info({ icon: Icon, label, value }) {
@@ -53,6 +54,13 @@ export default async function TuitionDetailsPage({ params }) {
               {t.subject} · {t.classLevel}
             </p>
             <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">{t.title}</h1>
+            {t.reviewCount > 0 && (
+              <p className="mt-3 flex items-center gap-2 text-sm">
+                <PiStarFill className="text-accent" />
+                <b>{t.avgRating}</b>
+                <span className="text-base-content/55">({t.reviewCount} {t.reviewCount === 1 ? "review" : "reviews"})</span>
+              </p>
+            )}
 
             <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
               <Info icon={PiGraduationCapDuotone} label="Class level" value={t.classLevel} />
@@ -81,6 +89,13 @@ export default async function TuitionDetailsPage({ params }) {
                 </p>
               </div>
             </div>
+
+            <ReviewsSection
+              tuitionId={t._id}
+              initialReviews={t.reviews || []}
+              initialAvg={t.avgRating || 0}
+              initialCount={t.reviewCount || 0}
+            />
           </div>
 
           <ApplyPanel tuitionId={t._id} fee={t.monthlyFee} />

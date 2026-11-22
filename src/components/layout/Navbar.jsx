@@ -22,6 +22,17 @@ const links = [
   { href: "/#how-it-works", label: "How It Works", icon: PiCompassRoseDuotone },
 ];
 
+// Scrolls to a section; keeps retrying for a moment because the home page
+// may still be loading when we arrive from another route.
+function scrollToId(id, tries = 0) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: tries === 0 ? "smooth" : "auto", block: "start" });
+    return;
+  }
+  if (tries < 40) setTimeout(() => scrollToId(id, tries + 1), 100);
+}
+
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
@@ -57,6 +68,28 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", close);
   }, []);
 
+  // Open the page's #hash section on first load / after navigating home
+  useEffect(() => {
+    if (pathname === "/" && window.location.hash) scrollToId(window.location.hash.slice(1));
+  }, [pathname]);
+
+  // "/#section" links: scroll directly when already on the home page,
+  // otherwise go home first and scroll once the section exists
+  const handleSectionLink = (e, href) => {
+    if (!href.startsWith("/#")) return false;
+    e.preventDefault();
+    const id = href.slice(2);
+    setOpen(false);
+    if (pathname === "/") {
+      scrollToId(id);
+      window.history.replaceState(null, "", href);
+    } else {
+      router.push(href, { scroll: false });
+      setTimeout(() => scrollToId(id, 1), 150);
+    }
+    return true;
+  };
+
   const moveLampTo = (e) => {
     const r = e.currentTarget.getBoundingClientRect();
     setLamp(r.left + r.width / 2);
@@ -88,6 +121,7 @@ export default function Navbar() {
                     data-nav-link
                     data-active={active}
                     onMouseEnter={moveLampTo}
+                    onClick={(e) => handleSectionLink(e, href)}
                     className="group flex items-center gap-2.5 rounded-xl px-5 py-2.5 text-[15px] font-medium"
                   >
                     <Icon className={`h-[22px] w-[22px] transition ${active ? "text-accent" : "text-white/45 group-hover:text-accent"}`} />
@@ -161,7 +195,7 @@ export default function Navbar() {
                 </div>
               )}
               {links.map(({ href, label, icon: Icon }) => (
-                <Link key={href} href={href} onClick={() => setOpen(false)} className="flex items-center gap-3 rounded-xl px-4 py-3 text-[15px] font-medium hover:bg-white/5">
+                <Link key={href} href={href} onClick={(e) => { if (!handleSectionLink(e, href)) setOpen(false); }} className="flex items-center gap-3 rounded-xl px-4 py-3 text-[15px] font-medium hover:bg-white/5">
                   <Icon className="h-[22px] w-[22px] text-white/45" /> {label}
                 </Link>
               ))}

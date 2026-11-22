@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
 // Two joined circles (chalkboard + books), arced headline and a Saturn-style looping text ring.
 // The ring passes BEHIND the blue circle (left half) and IN FRONT of the yellow circle (right half),
 // and the text slowly circulates around it.
@@ -73,11 +77,12 @@ function ellipseLength(rx, ry) {
 const RING_LEN = ellipseLength(RX, RY);
 const RING_TEXT = "LEARN ANYWHERE \u2022 ONLINE OR AT HOME \u2022 1-ON-1 MENTORSHIP \u2022 VERIFIED TUTORS \u2022 APPROVED BY ADMINS \u2022 ";
 const RING_TILT = 10; // degrees
+const LOOP_SECONDS = 50; // time for the text to go once around the ring
 const CLIP_Y = NECK.y - RY - 60;
 const CLIP_H = 2 * RY + 120;
 
 // One copy of the ring. Drawn twice: the left half behind the circles, the right half in front.
-function RingLayer({ clipId }) {
+function RingLayer({ clipId, register }) {
   return (
     <g transform={`rotate(${RING_TILT} ${NECK.x} ${NECK.y})`}>
       <g style={{ mixBlendMode: "difference" }}>
@@ -91,8 +96,13 @@ function RingLayer({ clipId }) {
             letterSpacing="3"
             style={{ fontFamily: "var(--font-space-mono), monospace", fill: "#ffffff" }}
           >
-            <textPath href="#hero-ring" textLength={2 * RING_LEN} lengthAdjust="spacing" startOffset={-RING_LEN}>
-              <animate attributeName="startOffset" from={-RING_LEN} to="0" dur="50s" repeatCount="indefinite" />
+            <textPath
+              ref={register}
+              href="#hero-ring"
+              textLength={2 * RING_LEN}
+              lengthAdjust="spacing"
+              startOffset={-RING_LEN}
+            >
               {RING_TEXT + RING_TEXT}
             </textPath>
           </text>
@@ -109,6 +119,28 @@ function Sparkle({ x, y, s = 1, fill }) {
 }
 
 export default function HeroStage({ className = "" }) {
+  // Both halves of the ring share one animation clock. It is driven from JS
+  // (not SVG <animate>) because mobile Safari / some phones ignore SMIL on textPath.
+  const paths = useRef(new Set());
+  const register = (el) => {
+    if (el) paths.current.add(el);
+  };
+
+  useEffect(() => {
+    let frame;
+    const start = performance.now();
+    const tick = (now) => {
+      const progress = (((now - start) / 1000) % LOOP_SECONDS) / LOOP_SECONDS;
+      const offset = (-RING_LEN + progress * RING_LEN).toFixed(2);
+      paths.current.forEach((el) => {
+        if (el.isConnected) el.setAttribute("startOffset", offset);
+      });
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
   return (
     <svg viewBox="0 0 1120 700" className={className} aria-hidden="true">
       <defs>
@@ -145,7 +177,7 @@ export default function HeroStage({ className = "" }) {
       </text>
 
       {/* ---------- ring, back half (hidden behind the blue circle) ---------- */}
-      <RingLayer clipId="ring-back-half" />
+      <RingLayer clipId="ring-back-half" register={register} />
 
       {/* ---------- the two joined circles ---------- */}
       <g clipPath="url(#hero-blob)">
@@ -229,7 +261,7 @@ export default function HeroStage({ className = "" }) {
       </text>
 
       {/* ---------- ring, front half (passes in front of the yellow circle) ---------- */}
-      <RingLayer clipId="ring-front-half" />
+      <RingLayer clipId="ring-front-half" register={register} />
 
       {/* motion lines + sparkles */}
       <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.6">

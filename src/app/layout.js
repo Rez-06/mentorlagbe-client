@@ -15,7 +15,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" data-theme="mentorlight">
+    <html lang="en" data-theme="mentorlight" data-scroll-behavior="smooth">
       <body className={`${poppins.variable} ${spaceMono.variable} ${oleo.variable} bg-base-100 text-base-content antialiased`}>
         <AuthProvider>
           <SiteChrome>{children}</SiteChrome>

@@ -202,7 +202,7 @@ export default function Footer() {
         {/* ---------- Bottom bar ---------- */}
         <div className="flex flex-col border-l border-base-content/25 sm:flex-row">
           <p className="flex-1 border-r border-base-content/25 px-5 py-4 font-mono text-[11px] uppercase tracking-[0.1em] text-base-content/70">
-            © {new Date().getFullYear()} MentorLagbe. All rights reserved.
+            © 2026 MentorLagbe. All rights reserved.
           </p>
           <div className="flex border-t border-base-content/25 text-sm sm:border-t-0">
             {["Privacy Policy", "Terms & Conditions", "Cookie Policy"].map((t) => (

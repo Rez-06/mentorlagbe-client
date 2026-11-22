@@ -1,4 +1,6 @@
-// Two joined circles (chalkboard + books), arced headline and looping text.
+// Two joined circles (chalkboard + books), arced headline and a Saturn-style looping text ring.
+// The ring passes BEHIND the blue circle (left half) and IN FRONT of the yellow circle (right half),
+// and the text slowly circulates around it.
 // All geometry is computed here so the neck between the circles stays smooth.
 
 const C1 = { x: 360, y: 300 };
@@ -52,6 +54,54 @@ const RX = 140;
 const RY = 235;
 const RING = `M ${NECK.x - RX} ${NECK.y} a ${RX} ${RY} 0 1 1 ${2 * RX} 0 a ${RX} ${RY} 0 1 1 ${-2 * RX} 0`;
 
+// Exact length of the ellipse, so the circulating text wraps around with no seam
+function ellipseLength(rx, ry) {
+  const n = 720;
+  let len = 0;
+  let px = rx;
+  let py = 0;
+  for (let i = 1; i <= n; i++) {
+    const t = (2 * Math.PI * i) / n;
+    const x = rx * Math.cos(t);
+    const y = ry * Math.sin(t);
+    len += Math.hypot(x - px, y - py);
+    px = x;
+    py = y;
+  }
+  return len;
+}
+const RING_LEN = ellipseLength(RX, RY);
+const RING_TEXT = "LEARN ANYWHERE \u2022 ONLINE OR AT HOME \u2022 1-ON-1 MENTORSHIP \u2022 VERIFIED TUTORS \u2022 APPROVED BY ADMINS \u2022 ";
+const RING_TILT = 10; // degrees
+const CLIP_Y = NECK.y - RY - 60;
+const CLIP_H = 2 * RY + 120;
+
+// One copy of the ring. Drawn twice: the left half behind the circles, the right half in front.
+function RingLayer({ clipId }) {
+  return (
+    <g transform={`rotate(${RING_TILT} ${NECK.x} ${NECK.y})`}>
+      <g style={{ mixBlendMode: "difference" }}>
+        <g clipPath={`url(#${clipId})`}>
+          {/* thin halo lines, like Saturn's rings */}
+          <ellipse cx={NECK.x} cy={NECK.y} rx={RX - 8} ry={RY - 8} fill="none" stroke="#ffffff" strokeWidth="1.2" opacity="0.5" />
+          <ellipse cx={NECK.x} cy={NECK.y} rx={RX + 26} ry={RY + 26} fill="none" stroke="#ffffff" strokeWidth="1.2" opacity="0.5" />
+          <text
+            fontSize="15"
+            fontWeight="700"
+            letterSpacing="3"
+            style={{ fontFamily: "var(--font-space-mono), monospace", fill: "#ffffff" }}
+          >
+            <textPath href="#hero-ring" textLength={2 * RING_LEN} lengthAdjust="spacing" startOffset={-RING_LEN}>
+              <animate attributeName="startOffset" from={-RING_LEN} to="0" dur="50s" repeatCount="indefinite" />
+              {RING_TEXT + RING_TEXT}
+            </textPath>
+          </text>
+        </g>
+      </g>
+    </g>
+  );
+}
+
 const SPARK = "M0-12C1-4 4-1 12 0 4 1 1 4 0 12-1 4-4 1-12 0-4-1-1-4 0-12Z";
 
 function Sparkle({ x, y, s = 1, fill }) {
@@ -67,6 +117,13 @@ export default function HeroStage({ className = "" }) {
         </clipPath>
         <path id="hero-arc" d={ARC} />
         <path id="hero-ring" d={RING} />
+        {/* ring halves, in the ring's own (tilted) coordinate space */}
+        <clipPath id="ring-back-half">
+          <rect x={NECK.x - RX - 60} y={CLIP_Y} width={RX + 60} height={CLIP_H} />
+        </clipPath>
+        <clipPath id="ring-front-half">
+          <rect x={NECK.x} y={CLIP_Y} width={RX + 60} height={CLIP_H} />
+        </clipPath>
       </defs>
 
       {/* page-colour backdrop so the blend-mode text works in light and dark */}
@@ -86,6 +143,9 @@ export default function HeroStage({ className = "" }) {
       >
         mentor
       </text>
+
+      {/* ---------- ring, back half (hidden behind the blue circle) ---------- */}
+      <RingLayer clipId="ring-back-half" />
 
       {/* ---------- the two joined circles ---------- */}
       <g clipPath="url(#hero-blob)">
@@ -168,19 +228,8 @@ export default function HeroStage({ className = "" }) {
         </textPath>
       </text>
 
-      {/* ---------- looping text (changes colour over each shape) ---------- */}
-      <g transform={`rotate(10 ${NECK.x} ${NECK.y})`} style={{ mixBlendMode: "difference" }}>
-        <text
-          fontSize="15"
-          fontWeight="700"
-          letterSpacing="3"
-          style={{ fontFamily: "var(--font-space-mono), monospace", fill: "#ffffff" }}
-        >
-          <textPath href="#hero-ring" textLength="1150" lengthAdjust="spacing">
-            LEARN ANYWHERE • ONLINE OR AT HOME • 1-ON-1 MENTORSHIP • VERIFIED TUTORS • APPROVED BY ADMINS •
-          </textPath>
-        </text>
-      </g>
+      {/* ---------- ring, front half (passes in front of the yellow circle) ---------- */}
+      <RingLayer clipId="ring-front-half" />
 
       {/* motion lines + sparkles */}
       <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.6">

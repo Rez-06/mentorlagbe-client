@@ -8,6 +8,7 @@ import { PiSidebarSimpleBold, PiSignOutBold, PiHouseLineDuotone, PiListBold, PiX
 import Logo from "@/components/ui/Logo";
 import UserAvatar from "@/components/ui/UserAvatar";
 import RoleBadge from "@/components/ui/RoleBadge";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useAuth } from "@/components/providers/AuthProvider";
 import { dashboardNav } from "@/lib/dashboardNav";
 
@@ -33,7 +34,6 @@ export default function DashboardShell({ children }) {
     <div className="min-h-screen bg-base-100 lg:flex">
       {mobile && <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={() => setMobile(false)} />}
 
-      {/* Sidebar */}
       <aside
         className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-neutral text-neutral-content transition-all duration-300 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
           mobile ? "translate-x-0" : "-translate-x-full"
@@ -41,9 +41,7 @@ export default function DashboardShell({ children }) {
       >
         <div className="flex h-[72px] items-center justify-between border-b border-white/10 px-5">
           <span className={hide}><Logo /></span>
-          {collapsed && (
-            <span className="logo-script hidden text-3xl font-bold lg:block"><span className="l-a">M</span></span>
-          )}
+          {collapsed && <span className="logo-script hidden text-3xl font-bold lg:block"><span className="l-a">M</span></span>}
           <button onClick={() => setMobile(false)} className="lg:hidden" aria-label="Close menu"><PiXBold size={22} /></button>
         </div>
 
@@ -83,7 +81,6 @@ export default function DashboardShell({ children }) {
         </div>
       </aside>
 
-      {/* Main */}
       <div className="min-w-0 flex-1">
         <header className="sticky top-0 z-30 flex h-[72px] items-center justify-between border-b border-base-content/10 bg-base-100/90 px-4 backdrop-blur sm:px-6">
           <div className="flex items-center gap-3">
@@ -97,6 +94,7 @@ export default function DashboardShell({ children }) {
           </div>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle className="border border-base-content/15 hover:bg-base-200" />
             <span className="hidden rounded-md border border-base-content/20 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider sm:inline-block">
               {user.plan} plan
             </span>

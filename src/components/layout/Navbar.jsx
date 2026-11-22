@@ -11,7 +11,8 @@ import {
 import Logo from "@/components/ui/Logo";
 import Container from "@/components/ui/Container";
 import UserAvatar from "@/components/ui/UserAvatar";
-//import RoleBadge from "@/components/ui/RoleBadge";
+import RoleBadge from "@/components/ui/RoleBadge";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 import { useAuth } from "@/components/providers/AuthProvider";
 
 const links = [
@@ -97,8 +98,9 @@ export default function Navbar() {
             })}
           </ul>
 
-          {/* Right side */}
+          {/* Right side (desktop) */}
           <div className="hidden items-center gap-2 lg:flex">
+            <ThemeToggle className="text-white/70 hover:bg-white/10 hover:text-white" />
             {loading ? (
               <span className="h-10 w-44 animate-pulse rounded-xl bg-white/10" />
             ) : user ? (
@@ -107,7 +109,7 @@ export default function Navbar() {
                   <UserAvatar user={user} />
                   <span className="text-left leading-tight">
                     <span className="block max-w-[9rem] truncate text-sm font-medium">{user.name}</span>
-                    {/* <RoleBadge role={user.role} /> */}
+                    <RoleBadge role={user.role} />
                   </span>
                   <PiCaretDownBold className="text-white/50" />
                 </button>
@@ -137,12 +139,15 @@ export default function Navbar() {
             )}
           </div>
 
-          <button onClick={() => setOpen(!open)} className="grid h-10 w-10 place-items-center rounded-xl hover:bg-white/10 lg:hidden" aria-label="Toggle menu">
-            {open ? <PiXBold size={22} /> : <PiListBold size={22} />}
-          </button>
+          {/* Right side (mobile) */}
+          <div className="flex items-center gap-1 lg:hidden">
+            <ThemeToggle className="text-white/70 hover:bg-white/10" />
+            <button onClick={() => setOpen(!open)} className="grid h-10 w-10 place-items-center rounded-xl hover:bg-white/10" aria-label="Toggle menu">
+              {open ? <PiXBold size={22} /> : <PiListBold size={22} />}
+            </button>
+          </div>
         </Container>
 
-        {/* Mobile menu */}
         {open && (
           <Container className="relative z-10 pb-4 lg:hidden">
             <div className="space-y-1 border-t border-white/10 pt-3">
@@ -151,7 +156,7 @@ export default function Navbar() {
                   <UserAvatar user={user} />
                   <div>
                     <p className="text-sm font-medium">{user.name}</p>
-                    {/* <RoleBadge role={user.role} /> */}
+                    <RoleBadge role={user.role} />
                   </div>
                 </div>
               )}

@@ -12,13 +12,13 @@ export default function PostTuitionPage() {
   const router = useRouter();
   const { data, loading } = useFetch("/api/tutor/tuitions");
   const posted = data?.tuitions.length ?? 0;
-  const limit = data?.limit ?? null; // null = Pro plan (unlimited)
+  const limit = data?.limit ?? null;
   const blocked = limit !== null && posted >= limit;
 
   const create = async (values) => {
     await apiFetch("/api/tutor/tuitions", { method: "POST", body: values });
     toast.success("Submitted! An admin will review your tuition soon.");
-    router.push("/dashboard/tutor");
+    router.push("/dashboard/tutor/my-tuitions");
   };
 
   return (

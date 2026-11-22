@@ -4,4 +4,5 @@ export const READY_ROUTES = [
   "/dashboard/admin",
   "/dashboard/profile",
   "/dashboard/tutor/post-tuition",
+  "/dashboard/tutor/my-tuitions",
 ];
